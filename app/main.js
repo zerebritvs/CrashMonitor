@@ -1,23 +1,22 @@
-const { app,  BrowserWindow} = require("electron");
+const {app, BrowserWindow, ipcMain} = require("electron");
 
+//mantener la app viva 
 let mainWindow = null;
 
-app.on("ready", () => {
-    mainWindow = new BrowserWindow();
-    mainWindow.loadFile(__dirname + "/index.html");
-});
+function createWindow(){
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
 
-//oro.innerHTML = initScrapGoldPrice();
-
-/*const cheerio = require("cheerio");
-const request = require("request-promise");
-
-async function initScrapGoldPrice(){
-    const goldReq = await request({
-        uri: "https://www.livepriceofgold.com/spain-gold-price.html",
-        transform: body => cheerio.load(body)
+        },
     });
 
-    const goldPriceGr = goldReq('.bold3').next();
-    return goldPriceGr.html();
-}*/
+    mainWindow.loadFile("app/ui/index.html");
+    mainWindow.send("data-receive", scrapData);
+    
+}
+
+app.whenReady().then(createWindow);
