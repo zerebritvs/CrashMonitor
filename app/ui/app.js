@@ -3,6 +3,7 @@ const { ipcRenderer } = require("electron");
 const request = require("request-promise");
 const cheerio = require("cheerio");
 
+//returns price of gold in gr
 async function initScrapGoldPrice(){
     const $ = await request({
         uri: "https://www.livepriceofgold.com/spain-gold-price.html",
@@ -13,6 +14,7 @@ async function initScrapGoldPrice(){
     return goldPriceGr;
 }
 
+//returns USA inflation
 async function initScrapInflation(){
     const $ = await request({
         uri: "https://fred.stlouisfed.org/series/DGS10",
@@ -23,6 +25,7 @@ async function initScrapInflation(){
     return usaInflation;
 }
 
+//returns Fear and Greed data
 async function initScrapFearGreed(){
     const $ = await request({
         uri: "https://money.cnn.com/data/fear-and-greed/",
@@ -42,121 +45,142 @@ async function initScrapFearGreed(){
     let indicatorNum1 = $(".indicatorContainer").children().children().children().html();
     const indicator1Value = $(".indicatorContainer").children().children().children().next().html();
     let indicator1 = "";
-    let cont2 = 0;
+    let cont1 = 0;
     for(i = 0; i<indicatorNum1.length; i++){
         if(indicatorNum1.charAt(i) == ">"){
-            if(cont2 == 1){
+            if(cont1 == 1){
                 indicator1 = indicatorNum1.substring(i+1,60);
             }
-            cont2++;
+            cont1++;
         }
     }
 
     let indicatorNum2 = $(".indicatorContainer").children().next().children().children().html();
     const indicator2Value = $(".indicatorContainer").children().next().children().children().next().html();
     let indicator2 = "";
-    let cont3 = 0;
+    let cont2 = 0;
     for(i = 0; i<indicatorNum2.length; i++){
         if(indicatorNum2.charAt(i) == ">"){
-            if(cont3 == 1){
+            if(cont2 == 1){
                 indicator2 = indicatorNum2.substring(i+1,60);
             }
-            cont3++;
+            cont2++;
         }
     }
 
     let indicatorNum3 = $(".indicatorContainer").children().next().next().children().children().html();
     const indicator3Value = $(".indicatorContainer").children().next().next().children().children().next().html();
     let indicator3 = "";
-    let cont4 = 0;
+    let cont3 = 0;
     for(i = 0; i<indicatorNum3.length; i++){
         if(indicatorNum3.charAt(i) == ">"){
-            if(cont4 == 1){
+            if(cont3 == 1){
                 indicator3 = indicatorNum3.substring(i+1,60);
             }
-            cont4++;
+            cont3++;
         }
     }
 
     let indicatorNum4 = $(".indicatorContainer").children().next().next().next().children().children().html();
     const indicator4Value = $(".indicatorContainer").children().next().next().next().children().children().next().html();
     let indicator4 = "";
-    let cont5 = 0;
+    let cont4 = 0;
     for(i = 0; i<indicatorNum4.length; i++){
         if(indicatorNum4.charAt(i) == ">"){
-            if(cont5 == 1){
+            if(cont4 == 1){
                 indicator4 = indicatorNum4.substring(i+1,60);
             }
-            cont5++;
+            cont4++;
         }
     }
 
     let indicatorNum5 = $(".indicatorContainer").children().next().next().next().next().children().children().html();
     const indicator5Value = $(".indicatorContainer").children().next().next().next().next().children().children().next().html();
     let indicator5 = "";
-    let cont6 = 0;
+    let cont5 = 0;
     for(i = 0; i<indicatorNum5.length; i++){
         if(indicatorNum5.charAt(i) == ">"){
-            if(cont6 == 1){
+            if(cont5 == 1){
                 indicator5 = indicatorNum5.substring(i+1,60);
             }
-            cont6++;
+            cont5++;
         }
     }
 
     let indicatorNum6 = $(".indicatorContainer").children().next().next().next().next().next().children().children().html();
     const indicator6Value = $(".indicatorContainer").children().next().next().next().next().next().children().children().next().html();
     let indicator6 = "";
-    let cont7 = 0;
+    let cont6 = 0;
     for(i = 0; i<indicatorNum6.length; i++){
         if(indicatorNum6.charAt(i) == ">"){
-            if(cont7 == 1){
+            if(cont6 == 1){
                 indicator6 = indicatorNum6.substring(i+1,60);
             }
-            cont7++;
+            cont6++;
         }
     }
 
     let indicatorNum7 = $(".indicatorContainer").children().next().next().next().next().next().next().children().children().html();
     const indicator7Value = $(".indicatorContainer").children().next().next().next().next().next().next().children().children().next().html();
     let indicator7 = "";
-    let cont8 = 0;
+    let cont7 = 0;
     for(i = 0; i<indicatorNum7.length; i++){
         if(indicatorNum7.charAt(i) == ">"){
-            if(cont8 == 1){
+            if(cont7 == 1){
                 indicator7 = indicatorNum7.substring(i+1,60);
             }
-            cont8++;
+            cont7++;
         }
     }
     
-    console.log(valueFG2);
-    console.log(indicator1);
-    console.log(indicator1Value);
-    console.log(indicator2);
-    console.log(indicator2Value);
-    console.log(indicator3);
-    console.log(indicator3Value);
-    console.log(indicator4);
-    console.log(indicator4Value);
-    console.log(indicator5);
-    console.log(indicator5Value);
-    console.log(indicator6);
-    console.log(indicator6Value);
-    console.log(indicator7);
-    console.log(indicator7Value);
+    let fearAndGreedData = new Map();
+
+    fearAndGreedData.set("FearAndGreedValue", valueFG2);
+    fearAndGreedData.set(indicator1, indicator1Value);
+    fearAndGreedData.set(indicator2, indicator2Value);
+    fearAndGreedData.set(indicator3, indicator3Value);
+    fearAndGreedData.set(indicator4, indicator4Value);
+    fearAndGreedData.set(indicator5, indicator5Value);
+    fearAndGreedData.set(indicator6, indicator6Value);
+    fearAndGreedData.set(indicator7, indicator7Value);
+
+    return fearAndGreedData;
 
 }
-initScrapFearGreed();
 
-//DOM Elements
-const goldCell = document.querySelector("#goldValue");
+//Paint the data on screen
+async function paintData(){
+    try{
+        const goldPrice = await initScrapGoldPrice();
+        const usaInflation = await initScrapInflation();
+        const fearAndGreedData = await initScrapFearGreed();
 
-const inflationCell = document.querySelector("#usaInflationValue");
+        const goldCell = document.querySelector("#goldValue");
+        const inflationCell = document.querySelector("#usaInflationValue");
+        const ind1Value = document.querySelector("#ind-1-value");
+        const ind2Value = document.querySelector("#ind-2-value");
+        const ind3Value = document.querySelector("#ind-3-value");
+        const ind4Value = document.querySelector("#ind-4-value");
+        const ind5Value = document.querySelector("#ind-5-value");
+        const ind6Value = document.querySelector("#ind-6-value");
+        const ind7Value = document.querySelector("#ind-7-value");
+        
 
-initScrapGoldPrice().then(x => {
-    goldCell.innerHTML = x;
-});
-initScrapInflation().then(x => {
-    inflationCell.innerHTML= x;
-});
+        goldCell.innerHTML = goldPrice;
+        inflationCell.innerHTML = usaInflation;
+        ind1Value.innerHTML = fearAndGreedData.get("Junk Bond Demand");
+        ind2Value.innerHTML = fearAndGreedData.get("Market Momentum");
+        ind3Value.innerHTML = fearAndGreedData.get("Put and Call Options");
+        ind4Value.innerHTML = fearAndGreedData.get("Safe Haven Demand");
+        ind5Value.innerHTML = fearAndGreedData.get("Market Volatility");
+        ind6Value.innerHTML = fearAndGreedData.get("Stock Price Breadth");
+        ind7Value.innerHTML = fearAndGreedData.get("Stock Price Strength");
+
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+paintData();
+
