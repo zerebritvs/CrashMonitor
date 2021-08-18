@@ -8,10 +8,25 @@
     <link rel="stylesheet" href="./bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        
-        <h1 id="oro"></h1>
-        <h1 id="inflation"></h1>
+    <div class="container p-5">
+        <h1 class="table-title p-2">Tabla de valores</h1>
+        <table class="table table-hover border-primary border-secondary">
+            <tr class="table-dark">
+                <th>Nombre</th>
+                <th>Valor</th>
+                <th>Fecha</th>
+            </tr>
+            <tr class="goldRow">
+                <td>Precio Oro por Gramo</td>
+                <td id="goldValue"></td>
+                <td></td>
+            </tr>
+            <tr class="inflationRow">
+                <td>Inflación USA</td>
+                <td id="usaInflationValue"></td>
+                <td></td>
+            </tr>
+        </table>
     </div>
 <script src="./app.js"></script>
 </body>

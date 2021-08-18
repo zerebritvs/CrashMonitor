@@ -9,13 +9,11 @@ function createWindow(){
         height: 600,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,
-
+            contextIsolation: false
         },
     });
 
     mainWindow.loadFile("app/ui/index.html");
-    mainWindow.send("data-receive", scrapData);
     
 }
 
