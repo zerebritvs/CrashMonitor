@@ -14,7 +14,7 @@ function createWindow(){
         }
     });
 
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
     mainWindow.loadFile("app/ui/index.html");
     
 }
@@ -160,4 +160,24 @@ ipcMain.handle("get-fear-greed", async () => {
     fearAndGreedData.set(indicator7, indicator7Value);
 
     return fearAndGreedData;
+});
+
+ipcMain.handle("get-wilshire-5000", async () => {
+    const $ = await request({
+        uri: "https://fred.stlouisfed.org/series/WILL5000INDFC",
+        transform: body => cheerio.load(body)
+    });
+
+    const wilshire5000 = $(".series-meta-observation-value").html().replace(/[,.]/g, m => (m === "," ? "." : ","));
+    return wilshire5000;
+});
+
+ipcMain.handle("get-GDP", async () => {
+    const $ = await request({
+        uri: "https://fred.stlouisfed.org/series/GDP",
+        transform: body => cheerio.load(body)
+    });
+
+    const GDPValue = $(".series-meta-observation-value").html().replace(/[,.]/g, m => (m === "," ? "." : ","));
+    return GDPValue;
 });

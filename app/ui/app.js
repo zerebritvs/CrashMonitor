@@ -5,6 +5,12 @@ async function paintData(){
         const goldPrice = await api.getGoldPrice();
         const usaInflation = await api.getUsaInflation();
         const fearAndGreedData = await api.getFearGreed();
+        const whilshire5000 = await api.getWilshire5000();
+        const gdpValue = await api.getGDP();
+        const buffetIndicator = parseFloat(whilshire5000)/parseFloat(gdpValue);
+        console.log(parseFloat(whilshire5000));
+        console.log(parseFloat(gdpValue));
+        console.log(buffetIndicator);
 
         const goldCell = document.querySelector("#goldValue");
         const inflationCell = document.querySelector("#usaInflationValue");
